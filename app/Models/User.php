@@ -65,10 +65,6 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-    public function ticketFiles(): HasMany
-    {
-        return $this->hasMany(TicketFile::class);
-    }
 
     public function isAdmin(): bool
     {
