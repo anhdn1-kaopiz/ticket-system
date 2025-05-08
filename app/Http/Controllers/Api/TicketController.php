@@ -25,9 +25,13 @@ class TicketController extends Controller
         $this->ticketService = $ticketService;
     }
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $tickets = $this->ticketService->getAllTickets();
+        $user = Auth::user();
+        $filters = $request->only(['status', 'priority', 'category_id']);
+
+        $tickets = $this->ticketService->getFilteredTickets($filters, $user);
+
         return response()->json($tickets);
     }
 
@@ -41,7 +45,7 @@ class TicketController extends Controller
             'categories' => 'required|array',
             'labels' => 'nullable|array',
             'priority' => 'required|in:low,medium,high,urgent',
-            'agent_id' => 'nullable',
+            'agent_id' => 'nullable|exists:users,id'
         ]);
 
         $ticket = $this->ticketService->createTicket($validated);
@@ -66,7 +70,8 @@ class TicketController extends Controller
             'categories' => 'required|array',
             'labels' => 'nullable|array',
             'priority' => 'required|in:low,medium,high,urgent',
-            'agent_id' => 'nullable',
+            'status' => 'required|in:open,in_progress,resolved,closed',
+            'agent_id' => 'nullable|exists:users,id'
         ]);
 
         $ticket = $this->ticketService->updateTicket($ticket->id, $validated);
@@ -100,16 +105,9 @@ class TicketController extends Controller
         return response()->json($ticket);
     }
 
-    public function getOptions(): JsonResponse
+    public function getActivityLog(Ticket $ticket): JsonResponse
     {
-        $agents = [];
-
-        return response()->json([
-            'categories' => Category::orderBy('name')->get(['id', 'name']),
-            'labels' => Label::orderBy('name')->get(['id', 'name']),
-            'priorities' => Ticket::getPriorityOptions(),
-            'statuses' => Ticket::getStatusOptions(),
-            'agents' => $agents,
-        ]);
+        $logs = $this->ticketService->getTicketActivityLogs($ticket->id);
+        return response()->json($logs);
     }
 }

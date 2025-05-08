@@ -65,7 +65,6 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -76,7 +75,7 @@ class User extends Authenticatable
         return $this->role === 'agent';
     }
 
-    public function isUser(): bool
+    public function isRegularUser(): bool
     {
         return $this->role === 'user';
     }

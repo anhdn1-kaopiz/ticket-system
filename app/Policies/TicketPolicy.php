@@ -30,26 +30,24 @@ class TicketPolicy
 
     public function update(User $user, Ticket $ticket)
     {
-        return $user->id === $ticket->user_id ||
-            $user->isAdmin() ||
-            ($user->isAgent() && $user->id === $ticket->agent_id);
+        return $user->isAdmin() ||
+            $user->id === $ticket->agent_id;
     }
 
     public function delete(User $user, Ticket $ticket)
     {
-        return $user->isAdmin() || $user->id === $ticket->user_id;
+        return $user->isAdmin();
     }
 
     public function assign(User $user, Ticket $ticket)
     {
-        return $user->isAdmin() || $user->isAgent();
+        return $user->isAdmin();
     }
 
     public function addComment(User $user, Ticket $ticket)
     {
         return $user->id === $ticket->user_id ||
             $user->id === $ticket->agent_id ||
-            $user->isAdmin() ||
-            $user->isAgent();
+            $user->isAdmin();
     }
 }

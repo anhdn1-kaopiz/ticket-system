@@ -15,4 +15,9 @@ interface TicketRepositoryInterface
     public function count();
     public function countByStatus(string $status);
     public function countByPriority(string $priority);
+    public function getFilteredTickets(array $filters, $user);
+    public function getUserTickets($userId);
+    public function getAdminTickets();
+    public function getAgentTickets($agentId);
+    public function getTicketActivityLogs($ticketId);
 }
