@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\ActivityLog;
 use App\Repositories\Interfaces\TicketRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Notifications\NewTicketNotification;
 
 class TicketService
 {
@@ -38,6 +40,12 @@ class TicketService
             'description' => 'Ticket created',
             'new_values' => $data
         ]);
+
+        // Notify admins
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new NewTicketNotification($ticket));
+        }
 
         return $ticket;
     }
