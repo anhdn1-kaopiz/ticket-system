@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Auth routes
@@ -35,5 +36,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/dashboard', [TicketController::class, 'adminDashboard']);
         Route::patch('/tickets/{ticket}/assign', [TicketController::class, 'assignAgent']);
         Route::get('/tickets/{ticket}/activity-logs', [TicketController::class, 'getActivityLog']);
+
+        // User management routes
+        Route::get('/users', [UserController::class, 'index']);
+        Route::get('/users/admins', [UserController::class, 'getAdmins']);
+        Route::get('/users/agents', [UserController::class, 'getAgents']);
+        Route::get('/users/regular', [UserController::class, 'getRegularUsers']);
+        Route::get('/users/{user}', [UserController::class, 'show']);
+        Route::patch('/users/{user}/role', [UserController::class, 'updateRole']);
     });
 });
